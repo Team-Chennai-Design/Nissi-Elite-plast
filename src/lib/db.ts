@@ -58,11 +58,15 @@ function notify(subject: string, html: string) {
 }
 
 function getSupabaseHeaders() {
-  return {
-    apikey: SUPABASE_KEY!,
-    Authorization: `Bearer ${SUPABASE_KEY!}`,
+  const key = SUPABASE_KEY!;
+  // New-style keys (sb_secret_...) are not JWTs: send them only in "apikey".
+  // Legacy service_role keys (JWT, start with "eyJ") also go in Authorization.
+  const headers: Record<string, string> = {
+    apikey: key,
     "Content-Type": "application/json",
   };
+  if (!key.startsWith("sb_")) headers.Authorization = `Bearer ${key}`;
+  return headers;
 }
 
 // ---------------- Optional Resend Email Notification ----------------

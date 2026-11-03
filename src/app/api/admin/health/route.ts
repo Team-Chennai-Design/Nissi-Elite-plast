@@ -41,13 +41,17 @@ export async function GET(req: NextRequest) {
     );
   } else {
     role = keyRole(key);
+    if (key.startsWith("sb_publishable_")) {
+      hints.push("SUPABASE_SERVICE_KEY is a PUBLISHABLE key. Use the secret key (sb_secret_...) or the legacy service_role key.");
+    }
     if (role === "anon") {
       hints.push(
         "SUPABASE_SERVICE_KEY is the ANON key. Use the service_role key (Supabase > Project Settings > API). With the anon key, reads return empty lists and the dashboard shows 0 leads."
       );
     }
 
-    const headers = { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
+    const headers: Record<string, string> = { apikey: key, "Content-Type": "application/json" };
+    if (!key.startsWith("sb_")) headers.Authorization = `Bearer ${key}`;
 
     for (const table of ["enquiries", "brochure_downloads"]) {
       try {
@@ -81,7 +85,19 @@ export async function GET(req: NextRequest) {
           await fetch(`${url}/rest/v1/enquiries?id=eq.${testId}`, { method: "DELETE", headers });
         } else {
           writeTest = `ERROR ${ins.status}: ${(await ins.text()).slice(0, 200)}`;
-          hints.push("Saving a lead FAILED. Check the key (must be service_role) and that supabase-schema.sql was run.");
+          hints.push(`Saving a lead FAILED. Supabase said: ${writeTest}`);
+          if (/42501|row-level security|401|403/i.test(writeTest)) {
+            hints.push("Permission denied: the key is not a secret/service_role key. Copy the secret key (sb_secret_...) into SUPABASE_SERVICE_KEY and redeploy.");
+          }
+          if (/PGRST204|column/i.test(writeTest)) {
+            hints.push("A column is missing: the tables were not created by supabase-schema.sql. Drop both tables and run the full script again.");
+          }
+          if (/22P02|invalid input syntax|uuid/i.test(writeTest)) {
+            hints.push("The id column has the wrong type (uuid instead of text). Drop both tables and run the full supabase-schema.sql again.");
+          }
+          if (/23502|null value/i.test(writeTest)) {
+            hints.push("A column has an extra NOT NULL rule. Drop both tables and run the full supabase-schema.sql again.");
+          }
         }
       } catch (e) {
         writeTest = `ERROR: ${e instanceof Error ? e.message : String(e)}`;
