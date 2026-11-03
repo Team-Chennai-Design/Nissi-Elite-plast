@@ -51,19 +51,28 @@ export async function POST(req: NextRequest) {
     const trimmedName = typeof name === "string" ? name.trim().slice(0, 100) : "";
     const trimmedInterest = typeof seriesInterest === "string" ? seriesInterest.trim().slice(0, 100) : "Complete Product Catalog";
 
-    const saved = await createBrochureDownload({
-      name: trimmedName,
-      email: email.trim().toLowerCase(),
-      phone: phone.trim(),
-      seriesInterest: trimmedInterest,
-      brochureName: "Nissi Elite Plast UPVC Profiles Product Manual 2026",
-    });
+    // Never block the PDF because lead-saving failed (e.g. database not configured yet).
+    // The failure is logged so it can be fixed, and the visitor still gets the manual.
+    let savedId: string | null = null;
+    try {
+      const saved = await createBrochureDownload({
+        name: trimmedName,
+        email: email.trim().toLowerCase(),
+        phone: phone.trim(),
+        seriesInterest: trimmedInterest,
+        brochureName: "Nissi Elite Plast UPVC Profiles Product Manual 2026",
+      });
+      savedId = saved.id;
+    } catch (dbError) {
+      console.error("Brochure lead NOT saved (download still delivered):", dbError);
+    }
 
     return NextResponse.json(
       {
         success: true,
         downloadUrl: "/Nissi_Elite_Plast_Product_Manual.pdf",
-        id: saved.id,
+        id: savedId,
+        saved: savedId !== null,
       },
       { status: 201 }
     );
