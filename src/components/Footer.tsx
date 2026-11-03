@@ -26,9 +26,9 @@ export default function Footer() {
         <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 border-b border-slate-900 text-xs sm:text-sm">
           {/* Col 1: Company Profile */}
           <div className="lg:col-span-4 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-white">
               Nissi Extrusion India Pvt Ltd
-            </h4>
+            </h2>
             <p className="text-xs text-slate-400 leading-relaxed">
               Established in 2024, built upon over a decade of fenestration experience since 2010. 
               Manufacturing high-performance 100% lead-free uPVC window and door profiles, 
@@ -41,9 +41,9 @@ export default function Footer() {
 
           {/* Col 2: Profile Systems */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-white">
               Profile Series
-            </h4>
+            </h2>
             <ul className="space-y-2 text-xs">
               <li>
                 <a href="#profiles" className="hover:text-orange-400 transition-colors">
@@ -80,9 +80,9 @@ export default function Footer() {
 
           {/* Col 3: Divisions */}
           <div className="lg:col-span-2 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-white">
               Ecosystem
-            </h4>
+            </h2>
             <ul className="space-y-2 text-xs">
               <li>
                 <span className="text-slate-300 font-semibold">NISSI Elite plast</span>
@@ -106,9 +106,9 @@ export default function Footer() {
 
           {/* Col 4: Contact & Addresses */}
           <div className="lg:col-span-4 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-white">
               Offices & Plants
-            </h4>
+            </h2>
             <div className="space-y-3 text-xs">
               <div>
                 <strong className="text-white block">Admin Office:</strong>

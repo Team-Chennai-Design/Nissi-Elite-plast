@@ -67,9 +67,9 @@ export default function BrochureModal() {
               <Sparkles className="w-3.5 h-3.5" />
               <span>Official 2026 Edition</span>
             </div>
-            <h3 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
               Download the Official Nissi Elite Plast Product Manual
-            </h3>
+            </h2>
             <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
               Access complete CAD assembly cross-sections, profile codes (NEP-1001 to NEP-1026), wall thickness tolerances, reinforcement charts, and European foil color swatches.
             </p>

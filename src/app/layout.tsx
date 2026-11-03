@@ -1,9 +1,38 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#0f172a",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: "NISSI Elite Plast",
+  authors: [{ name: "Nissi Extrusion India Pvt Ltd", url: SITE_URL }],
+  creator: "Nissi Extrusion India Pvt Ltd",
+  publisher: "Nissi Extrusion India Pvt Ltd",
+  category: "Building Materials",
+  formatDetection: { telephone: true, email: true, address: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+    other: process.env.BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION }
+      : undefined,
+  },
   title: {
     default: "NISSI Elite Plast | Leading uPVC Windows & Doors Profiles Manufacturer",
     template: "%s | NISSI Elite Plast",
@@ -43,7 +72,6 @@ export const metadata: Metadata = {
   icons: {
     icon: "/logo.svg",
     shortcut: "/logo.svg",
-    apple: "/logo.svg",
   },
 };
 
@@ -53,7 +81,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en-IN" className="scroll-smooth">
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-orange-600 selection:text-white">
         {children}
       </body>

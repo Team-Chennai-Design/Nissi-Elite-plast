@@ -14,10 +14,13 @@ import BrochureModal from "@/components/BrochureModal";
 import Faq from "@/components/Faq";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
+import { buildStructuredData } from "@/lib/seo";
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white text-slate-900 selection:bg-orange-600 selection:text-white">
+      <JsonLd data={buildStructuredData()} />
       <TopBar />
       <Navbar />
       <main className="flex-1">

@@ -127,7 +127,7 @@ export default function Hero() {
               <div className="relative h-[380px] sm:h-[460px] w-full overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
-                  alt="Modern Luxury Villa Architectural Fenestration Concept"
+                  alt="uPVC casement and sliding windows fitted in a modern luxury villa"
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 500px"
@@ -153,9 +153,9 @@ export default function Hero() {
                     <span className="text-[10px] font-bold uppercase tracking-widest text-orange-400">
                       Signature Series
                     </span>
-                    <h3 className="text-lg font-bold text-white">
+                    <h2 className="text-lg font-bold text-white">
                       60 Casement & Multi-Track Sliding
-                    </h3>
+                    </h2>
                     <p className="text-xs text-slate-400 mt-0.5">
                       European Foils • Hot Melt PUR Technology • Zero Maintenance
                     </p>
