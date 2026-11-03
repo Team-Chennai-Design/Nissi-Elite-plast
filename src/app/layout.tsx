@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.nissiupvcgroups.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "NISSI Elite Plast | Leading uPVC Windows & Doors Profiles Manufacturer",
     template: "%s | NISSI Elite Plast",
@@ -28,16 +29,8 @@ export const metadata: Metadata = {
     title: "NISSI Elite Plast | uPVC Windows & Doors Profiles Manufacturer",
     description:
       "Precision in Every Profile, Excellence in Every Frame. European extrusion technology, 100% lead-free, 15-year warranty.",
-    url: "https://www.nissiupvcgroups.com",
+    url: SITE_URL,
     siteName: "NISSI Elite Plast",
-    images: [
-      {
-        url: "/logo.svg",
-        width: 728,
-        height: 202,
-        alt: "NISSI Elite Plast UPVC Profiles",
-      },
-    ],
     locale: "en_IN",
     type: "website",
   },
@@ -46,7 +39,6 @@ export const metadata: Metadata = {
     title: "NISSI Elite Plast | uPVC Windows & Doors Profiles Manufacturer",
     description:
       "European-grade 100% lead-free uPVC profiles manufactured in Avadi, Chennai. 15-year warranty.",
-    images: ["/logo.svg"],
   },
   icons: {
     icon: "/logo.svg",

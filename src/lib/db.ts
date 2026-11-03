@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import { after } from "next/server";
 
 export interface Enquiry {
   id: string;
@@ -27,6 +28,34 @@ export interface BrochureDownload {
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_KEY);
+
+/** Escape user text before putting it in an HTML email (prevents HTML/link injection). */
+function esc(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/** In production the JSON file fallback must never be used: Vercel disks are not persistent. */
+function assertStorageReady() {
+  if (!isSupabaseConfigured && process.env.NODE_ENV === "production") {
+    throw new Error(
+      "Database not configured: set SUPABASE_URL and SUPABASE_SERVICE_KEY in the environment."
+    );
+  }
+}
+
+function notify(subject: string, html: string) {
+  // after() keeps the serverless function alive until the email is sent.
+  try {
+    after(() => sendNotificationEmail(subject, html));
+  } catch {
+    void sendNotificationEmail(subject, html);
+  }
+}
 
 function getSupabaseHeaders() {
   return {
@@ -113,6 +142,7 @@ async function writeLocalDb(data: LocalDbSchema): Promise<void> {
 export async function createEnquiry(
   input: Omit<Enquiry, "id" | "createdAt" | "status">
 ): Promise<Enquiry> {
+  assertStorageReady();
   const id = `ENQ-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
   const now = new Date().toISOString();
 
@@ -144,16 +174,16 @@ export async function createEnquiry(
     const created = records[0];
 
     // Send background notification email
-    sendNotificationEmail(
-      `New Nissi Lead: ${input.name} (${input.role})`,
+    notify(
+      `New Nissi Lead: ${input.name.replace(/[\r\n]/g, " ")} (${input.role.replace(/[\r\n]/g, " ")})`,
       `<h3>New Fabricator/Dealer Enquiry</h3>
-       <p><strong>Name:</strong> ${input.name}</p>
-       <p><strong>Phone:</strong> ${input.phone}</p>
-       <p><strong>Email:</strong> ${input.email}</p>
-       <p><strong>Role:</strong> ${input.role}</p>
-       <p><strong>City:</strong> ${input.city}</p>
-       <p><strong>Series of Interest:</strong> ${input.series}</p>
-       <p><strong>Message:</strong> ${input.message || "None"}</p>`
+       <p><strong>Name:</strong> ${esc(input.name)}</p>
+       <p><strong>Phone:</strong> ${esc(input.phone)}</p>
+       <p><strong>Email:</strong> ${esc(input.email)}</p>
+       <p><strong>Role:</strong> ${esc(input.role)}</p>
+       <p><strong>City:</strong> ${esc(input.city)}</p>
+       <p><strong>Series of Interest:</strong> ${esc(input.series)}</p>
+       <p><strong>Message:</strong> ${esc(input.message || "None")}</p>`
     );
 
     return {
@@ -207,6 +237,7 @@ interface SupabaseDownloadRow {
 }
 
 export async function getEnquiries(): Promise<Enquiry[]> {
+  assertStorageReady();
   if (isSupabaseConfigured) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/enquiries?order=created_at.desc`, {
       headers: getSupabaseHeaders(),
@@ -239,6 +270,7 @@ export async function getEnquiries(): Promise<Enquiry[]> {
 export async function createBrochureDownload(
   input: Omit<BrochureDownload, "id" | "downloadedAt">
 ): Promise<BrochureDownload> {
+  assertStorageReady();
   const id = `DL-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
   const now = new Date().toISOString();
 
@@ -267,13 +299,13 @@ export async function createBrochureDownload(
     const created = records[0];
 
     // Notification email
-    sendNotificationEmail(
+    notify(
       `Catalog Downloaded: ${input.email} (${input.phone})`,
       `<h3>Product Manual Download Lead</h3>
-       <p><strong>Name:</strong> ${input.name || "N/A"}</p>
-       <p><strong>Email:</strong> ${input.email}</p>
-       <p><strong>Phone:</strong> ${input.phone}</p>
-       <p><strong>Series of Interest:</strong> ${input.seriesInterest || "All"}</p>`
+       <p><strong>Name:</strong> ${esc(input.name || "N/A")}</p>
+       <p><strong>Email:</strong> ${esc(input.email)}</p>
+       <p><strong>Phone:</strong> ${esc(input.phone)}</p>
+       <p><strong>Series of Interest:</strong> ${esc(input.seriesInterest || "All")}</p>`
     );
 
     return {
@@ -299,6 +331,7 @@ export async function createBrochureDownload(
 }
 
 export async function getBrochureDownloads(): Promise<BrochureDownload[]> {
+  assertStorageReady();
   if (isSupabaseConfigured) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/brochure_downloads?order=downloaded_at.desc`, {
       headers: getSupabaseHeaders(),

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
 import {
   Users,
@@ -15,10 +16,7 @@ import {
   RefreshCw,
   ArrowLeft,
   CheckCircle2,
-  Lock,
   LogOut,
-  AlertCircle,
-  KeyRound,
 } from "lucide-react";
 
 interface Enquiry {
@@ -63,107 +61,60 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Authentication State
-  const [tokenInput, setTokenInput] = useState("");
-  const [authToken, setAuthToken] = useState<string>("");
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [authError, setAuthError] = useState<string | null>(null);
+  const [authorized, setAuthorized] = useState(false);
+  const router = useRouter();
 
-  useEffect(() => {
-    let isMounted = true;
-    async function checkExistingSession() {
-      const savedToken = sessionStorage.getItem("nissi_admin_token");
-      if (savedToken) {
-        try {
-          const [enqRes, dlRes] = await Promise.all([
-            fetch("/api/enquiries", { headers: { Authorization: `Bearer ${savedToken}` } }),
-            fetch("/api/brochure-download", { headers: { Authorization: `Bearer ${savedToken}` } }),
-          ]);
+  const redirectToLogin = () => {
+    router.replace("/admin/login");
+  };
 
-          if (enqRes.ok && dlRes.ok) {
-            const enqJson = await enqRes.json();
-            const dlJson = await dlRes.json();
-            if (isMounted) {
-              setEnquiries(enqJson.data || []);
-              setDownloads(dlJson.data || []);
-              setAuthToken(savedToken);
-              setIsAuthenticated(true);
-            }
-          } else {
-            sessionStorage.removeItem("nissi_admin_token");
-          }
-        } catch (err) {
-          console.error("Session check error:", err);
-          sessionStorage.removeItem("nissi_admin_token");
-        }
-      }
-      if (isMounted) setLoading(false);
-    }
-
-    checkExistingSession();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthError(null);
-    setLoading(true);
-
+  const loadData = async (): Promise<boolean> => {
     try {
-      const cleanToken = tokenInput.trim();
       const [enqRes, dlRes] = await Promise.all([
-        fetch("/api/enquiries", { headers: { Authorization: `Bearer ${cleanToken}` } }),
-        fetch("/api/brochure-download", { headers: { Authorization: `Bearer ${cleanToken}` } }),
+        fetch("/api/enquiries", { credentials: "same-origin", cache: "no-store" }),
+        fetch("/api/brochure-download", { credentials: "same-origin", cache: "no-store" }),
       ]);
 
-      if (!enqRes.ok || !dlRes.ok) {
-        throw new Error("Invalid Administrator Passkey. Please verify your token.");
+      if (enqRes.status === 401 || dlRes.status === 401) {
+        redirectToLogin();
+        return false;
       }
 
       const enqJson = await enqRes.json();
       const dlJson = await dlRes.json();
-
-      sessionStorage.setItem("nissi_admin_token", cleanToken);
-      setAuthToken(cleanToken);
-      setEnquiries(enqJson.data || []);
-      setDownloads(dlJson.data || []);
-      setIsAuthenticated(true);
-    } catch (err) {
-      setAuthError(err instanceof Error ? err.message : "Authentication failed.");
-    } finally {
-      setLoading(false);
+      if (enqJson.success) setEnquiries(enqJson.data || []);
+      if (dlJson.success) setDownloads(dlJson.data || []);
+      return true;
+    } catch (error) {
+      console.error("Failed to load leads:", error);
+      return false;
     }
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("nissi_admin_token");
-    setAuthToken("");
-    setIsAuthenticated(false);
-    setEnquiries([]);
-    setDownloads([]);
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const ok = await loadData();
+      if (active) {
+        setAuthorized(ok);
+        setLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
+    redirectToLogin();
   };
 
   const refreshData = async () => {
-    if (!authToken) return;
     setLoading(true);
-    try {
-      const [enqRes, dlRes] = await Promise.all([
-        fetch("/api/enquiries", { headers: { Authorization: `Bearer ${authToken}` } }),
-        fetch("/api/brochure-download", { headers: { Authorization: `Bearer ${authToken}` } }),
-      ]);
-
-      const enqJson = await enqRes.json();
-      const dlJson = await dlRes.json();
-
-      if (enqJson.success) setEnquiries(enqJson.data || []);
-      if (dlJson.success) setDownloads(dlJson.data || []);
-    } catch (error) {
-      console.error("Failed to reload data:", error);
-    } finally {
-      setLoading(false);
-    }
+    await loadData();
+    setLoading(false);
   };
 
   const filteredEnquiries = enquiries.filter(
@@ -236,68 +187,11 @@ export default function AdminDashboard() {
     URL.revokeObjectURL(url);
   };
 
-  // If not authenticated, render Login Wall
-  if (!isAuthenticated) {
+  // Hide the dashboard until the session is confirmed (prevents a flash before redirect)
+  if (!authorized) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-8 sm:p-10 shadow-2xl">
-          <div className="text-center mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-orange-600/10 border border-orange-500/20 text-orange-500 flex items-center justify-center mx-auto mb-4">
-              <Lock className="w-7 h-7" />
-            </div>
-            <h1 className="text-xl sm:text-2xl font-black text-white">
-              Nissi Leads Portal
-            </h1>
-            <p className="text-xs text-slate-400 mt-1">
-              Restricted area for authorized Nissi sales and administrative teams.
-            </p>
-          </div>
-
-          {authError && (
-            <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-              <span>{authError}</span>
-            </div>
-          )}
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label htmlFor="admin_passkey" className="block text-xs font-bold uppercase text-slate-400 mb-1.5">
-                Administrator Passkey
-              </label>
-              <div className="relative">
-                <KeyRound className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
-                <input
-                  id="admin_passkey"
-                  type="password"
-                  required
-                  value={tokenInput}
-                  onChange={(e) => setTokenInput(e.target.value)}
-                  placeholder="Enter secret admin token..."
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-orange-500"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 shadow-lg shadow-orange-600/30 transition-all disabled:opacity-50"
-            >
-              {loading ? "Authenticating..." : "Unlock Dashboard"}
-            </button>
-          </form>
-
-          <div className="mt-6 pt-6 border-t border-slate-800/80 text-center">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Return to Public Website</span>
-            </Link>
-          </div>
-        </div>
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-xs text-slate-500">
+        Verifying session...
       </div>
     );
   }
