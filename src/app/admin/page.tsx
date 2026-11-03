@@ -62,6 +62,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [authorized, setAuthorized] = useState(false);
+  const [setupIssues, setSetupIssues] = useState<string[]>([]);
   const router = useRouter();
 
   const redirectToLogin = () => {
@@ -95,6 +96,21 @@ export default function AdminDashboard() {
     let active = true;
     (async () => {
       const ok = await loadData();
+      if (ok) {
+        try {
+          const h = await fetch("/api/admin/health", { credentials: "same-origin", cache: "no-store" });
+          const hj = await h.json();
+          if (active && hj && hj.ok === false) {
+            setSetupIssues(
+              hj.hints && hj.hints.length
+                ? hj.hints
+                : ["Lead storage check failed. Open /api/admin/health for details."]
+            );
+          }
+        } catch {
+          /* ignore: banner is only a helper */
+        }
+      }
       if (active) {
         setAuthorized(ok);
         setLoading(false);
@@ -235,6 +251,19 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {setupIssues.length > 0 && (
+          <div role="alert" className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/40 text-rose-200 text-xs sm:text-sm">
+            <div className="font-bold text-rose-300 mb-1">
+              Lead storage is not working, so new website leads may NOT be saved here.
+            </div>
+            <ul className="list-disc pl-5 space-y-1">
+              {setupIssues.map((issue) => (
+                <li key={issue}>{issue}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Page Title & Metrics */}
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-black text-white">
