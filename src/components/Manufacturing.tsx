@@ -1,11 +1,5 @@
 import {
-  Factory,
-  Cog,
-  Gauge,
   CheckCircle2,
-  Layers,
-  Sparkles,
-  Building,
   Microscope,
 } from "lucide-react";
 

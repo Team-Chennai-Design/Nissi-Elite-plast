@@ -9,6 +9,7 @@ import ColorFinishes from "@/components/ColorFinishes";
 import Manufacturing from "@/components/Manufacturing";
 import HardwareSection from "@/components/HardwareSection";
 import BrochureModal from "@/components/BrochureModal";
+import Faq from "@/components/Faq";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 
@@ -27,6 +28,7 @@ export default function Home() {
         <Manufacturing />
         <HardwareSection />
         <BrochureModal />
+        <Faq />
         <ContactSection />
       </main>
       <Footer />

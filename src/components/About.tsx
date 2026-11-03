@@ -1,10 +1,7 @@
+import Image from "next/image";
 import {
   Factory,
-  ShieldCheck,
-  Building2,
   Wrench,
-  CheckCircle,
-  Truck,
   Armchair,
   Layers,
   HeartHandshake,
@@ -110,13 +107,15 @@ export default function About() {
 
           {/* Right Column: Factory Image & Infrastructure Quick-Look */}
           <div className="lg:col-span-5 relative">
-            <div className="rounded-3xl overflow-hidden shadow-xl border border-slate-200 relative">
-              <img
+            <div className="rounded-3xl overflow-hidden shadow-xl border border-slate-200 relative h-80 sm:h-96 w-full">
+              <Image
                 src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80"
-                alt="Nissi Extrusion high-tech manufacturing plant"
-                className="w-full h-80 sm:h-96 object-cover"
+                alt="European precision tooling and extrusion lines"
+                fill
+                sizes="(max-width: 1024px) 100vw, 500px"
+                className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent pointer-events-none" />
               <div className="absolute bottom-6 left-6 right-6 text-white">
                 <div className="text-xs uppercase font-bold text-orange-400">
                   Avadi, Chennai Facility

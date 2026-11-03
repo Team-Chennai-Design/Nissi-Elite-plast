@@ -1,5 +1,4 @@
 import Logo from "./Logo";
-import { Phone, Mail, MapPin, Building, Factory, Globe, ShieldCheck } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -146,9 +145,6 @@ export default function Footer() {
           <div className="flex items-center gap-6">
             <span>Made with Indian Pride & European Precision</span>
             <span>15-Year Backed Warranty</span>
-            <a href="/admin" className="text-slate-400 hover:text-orange-400 transition-colors">
-              Leads Portal
-            </a>
           </div>
         </div>
       </div>

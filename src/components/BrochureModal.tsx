@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Download, FileText, CheckCircle2, Sparkles, AlertCircle, PhoneCall } from "lucide-react";
+import { Download, FileText, CheckCircle2, Sparkles, AlertCircle } from "lucide-react";
 
 export default function BrochureModal() {
   const [downloadRequested, setDownloadRequested] = useState(false);
@@ -9,6 +9,7 @@ export default function BrochureModal() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [seriesInterest, setSeriesInterest] = useState("60 Casement & Sliding Series");
+  const [honeypot, setHoneypot] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string>("/Nissi_Elite_Plast_Product_Manual.pdf");
@@ -23,10 +24,11 @@ export default function BrochureModal() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: name || "Prospective Fabricator/Client",
-          email,
-          phone,
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
           seriesInterest,
+          hp_field: honeypot,
         }),
       });
 
@@ -40,16 +42,16 @@ export default function BrochureModal() {
       setDownloadUrl(fileUrl);
       setDownloadRequested(true);
 
-      // Trigger actual download in the browser
+      // Trigger download in the browser
       const link = document.createElement("a");
       link.href = fileUrl;
       link.download = "Nissi_Elite_Plast_Product_Manual.pdf";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    } catch (err: any) {
-      console.error("Brochure download error:", err);
-      setErrorMessage(err.message || "Failed to trigger download. Please try again.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to trigger download. Please try again.";
+      setErrorMessage(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -101,7 +103,7 @@ export default function BrochureModal() {
                 </div>
                 <h4 className="text-xl font-bold">Download Started!</h4>
                 <p className="text-xs text-slate-300 mt-2">
-                  Your official Nissi Elite Plast Product Manual PDF download has begun. Your request has been logged in our system.
+                  Your official Nissi Elite Plast Product Manual PDF download has begun.
                 </p>
 
                 <div className="mt-4">
@@ -147,11 +149,24 @@ export default function BrochureModal() {
                   </div>
                 )}
 
+                {/* Honeypot field */}
+                <div className="hidden" aria-hidden="true">
+                  <input
+                    type="text"
+                    name="hp_field"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                  />
+                </div>
+
                 <div>
-                  <label className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
+                  <label htmlFor="dl_name" className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
                     Your Name
                   </label>
                   <input
+                    id="dl_name"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -161,10 +176,11 @@ export default function BrochureModal() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
+                  <label htmlFor="dl_email" className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
                     Work Email *
                   </label>
                   <input
+                    id="dl_email"
                     type="email"
                     required
                     value={email}
@@ -175,10 +191,11 @@ export default function BrochureModal() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
+                  <label htmlFor="dl_phone" className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
                     Mobile / WhatsApp Number *
                   </label>
                   <input
+                    id="dl_phone"
                     type="tel"
                     required
                     value={phone}
@@ -189,10 +206,11 @@ export default function BrochureModal() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
+                  <label htmlFor="dl_series" className="block text-[11px] font-bold uppercase text-slate-400 mb-1">
                     Series of Primary Interest
                   </label>
                   <select
+                    id="dl_series"
                     value={seriesInterest}
                     onChange={(e) => setSeriesInterest(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:outline-none focus:border-orange-500"

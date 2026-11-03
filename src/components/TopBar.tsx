@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, Award, FileDown } from "lucide-react";
+import { Phone, Mail, MapPin, FileDown } from "lucide-react";
 
 export default function TopBar() {
   return (

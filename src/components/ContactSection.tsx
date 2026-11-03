@@ -4,14 +4,11 @@ import { useState } from "react";
 import {
   Phone,
   Mail,
-  MapPin,
-  Clock,
   Send,
   CheckCircle2,
   Building,
   Factory,
   Globe,
-  ShieldCheck,
   AlertCircle,
 } from "lucide-react";
 
@@ -26,6 +23,7 @@ export default function ContactSection() {
     message: "",
   });
 
+  const [honeypot, setHoneypot] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -40,7 +38,7 @@ export default function ContactSection() {
       const res = await fetch("/api/enquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, hp_field: honeypot }),
       });
 
       const data = await res.json();
@@ -49,11 +47,11 @@ export default function ContactSection() {
         throw new Error(data.error || "Failed to submit enquiry. Please try again.");
       }
 
-      setLeadRefId(data.data?.id || `ENQ-${Date.now().toString(36).toUpperCase()}`);
+      setLeadRefId(data.id || `ENQ-${Date.now().toString(36).toUpperCase()}`);
       setSubmitted(true);
-    } catch (err: any) {
-      console.error("Enquiry submission error:", err);
-      setErrorMessage(err.message || "An unexpected error occurred. Please call +91 99622 25516.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "An unexpected error occurred. Please call +91 99622 25516.";
+      setErrorMessage(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -179,12 +177,12 @@ export default function ContactSection() {
                 <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-6">
                   <CheckCircle2 className="w-10 h-10" />
                 </div>
-                <h3 className="text-2xl font-black">Enquiry Recorded in Database!</h3>
+                <h3 className="text-2xl font-black">Enquiry Received!</h3>
                 <div className="mt-3 inline-block px-3.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-mono text-orange-400">
                   Reference ID: {leadRefId}
                 </div>
                 <p className="mt-4 text-sm text-slate-300 max-w-md mx-auto">
-                  Thank you, <span className="font-bold text-white">{formData.name}</span>. A technical sales engineer from Nissi Extrusion India will contact you with dealer pricing and profile specifications within 2 hours.
+                  Thank you, <span className="font-bold text-white">{formData.name}</span>. Our technical sales team will review your requirements and contact you shortly.
                 </p>
                 <div className="mt-6 p-4 rounded-xl bg-slate-800 text-xs text-slate-400 max-w-sm mx-auto">
                   For immediate urgent supply dispatch: Call <strong className="text-orange-400">+91 99622 25516</strong>
@@ -225,12 +223,25 @@ export default function ContactSection() {
                   </div>
                 )}
 
+                {/* Honeypot anti-spam field */}
+                <div className="hidden" aria-hidden="true">
+                  <input
+                    type="text"
+                    name="hp_field"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+                    <label htmlFor="enq_name" className="block text-xs font-bold uppercase text-slate-400 mb-1">
                       Full Name *
                     </label>
                     <input
+                      id="enq_name"
                       type="text"
                       required
                       value={formData.name}
@@ -241,10 +252,11 @@ export default function ContactSection() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+                    <label htmlFor="enq_phone" className="block text-xs font-bold uppercase text-slate-400 mb-1">
                       Mobile / WhatsApp Number *
                     </label>
                     <input
+                      id="enq_phone"
                       type="tel"
                       required
                       value={formData.phone}
@@ -257,10 +269,11 @@ export default function ContactSection() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+                    <label htmlFor="enq_email" className="block text-xs font-bold uppercase text-slate-400 mb-1">
                       Email Address *
                     </label>
                     <input
+                      id="enq_email"
                       type="email"
                       required
                       value={formData.email}
@@ -271,10 +284,11 @@ export default function ContactSection() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+                    <label htmlFor="enq_city" className="block text-xs font-bold uppercase text-slate-400 mb-1">
                       Your City & State *
                     </label>
                     <input
+                      id="enq_city"
                       type="text"
                       required
                       value={formData.city}
@@ -287,10 +301,11 @@ export default function ContactSection() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+                    <label htmlFor="enq_role" className="block text-xs font-bold uppercase text-slate-400 mb-1">
                       I Am A:
                     </label>
                     <select
+                      id="enq_role"
                       value={formData.role}
                       onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:border-orange-500"
@@ -304,10 +319,11 @@ export default function ContactSection() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+                    <label htmlFor="enq_series" className="block text-xs font-bold uppercase text-slate-400 mb-1">
                       Series of Interest:
                     </label>
                     <select
+                      id="enq_series"
                       value={formData.series}
                       onChange={(e) => setFormData({ ...formData, series: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:border-orange-500"
@@ -323,10 +339,11 @@ export default function ContactSection() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-400 mb-1">
+                  <label htmlFor="enq_message" className="block text-xs font-bold uppercase text-slate-400 mb-1">
                     Project Requirements / Estimated Volume
                   </label>
                   <textarea
+                    id="enq_message"
                     rows={3}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -341,7 +358,7 @@ export default function ContactSection() {
                   className="w-full py-4 rounded-xl text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-orange-600 via-orange-500 to-amber-600 hover:from-orange-700 hover:to-amber-700 shadow-xl shadow-orange-600/30 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
-                    <span>Saving to Database & Submitting...</span>
+                    <span>Submitting Enquiry...</span>
                   ) : (
                     <>
                       <span>Submit Dealer / Fabricator Enquiry</span>

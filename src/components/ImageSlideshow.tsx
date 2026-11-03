@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import {
   ChevronLeft,
   ChevronRight,
@@ -8,105 +9,133 @@ import {
   Play,
   Sparkles,
   MapPin,
-  ShieldCheck,
   ArrowRight,
-  Maximize2,
 } from "lucide-react";
+
+interface Slide {
+  id: number;
+  image: string;
+  tag: string;
+  title: string;
+  series: string;
+  specs: string;
+  location: string;
+  badge: string;
+}
+
+const SLIDES: Slide[] = [
+  {
+    id: 1,
+    image:
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80",
+    tag: "3 Track Multi-Panel System",
+    title: "Grand Panoramic Sliding Door System",
+    series: "Nissi 3T Frame (NEP-1019) with Big Sash (NEP-1011)",
+    specs: "112mm Heavy-Duty Frame • Silent Tandem Bearing Rollers • Multi-Chamber Insulation",
+    location: "Modern Architectural Villa Application",
+    badge: "Wide Panoramic Span",
+  },
+  {
+    id: 2,
+    image:
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80",
+    tag: "Architectural Color Profiles",
+    title: "Anthracite Grey Modern Casement Facade",
+    series: "60 Casement Series with European Grey Foil",
+    specs: "Class A 2.3mm Wall Thickness • Multi-Point Security Locks • Dual EPDM Gaskets",
+    location: "Contemporary Residential Facade",
+    badge: "20-Year Foil Warranty",
+  },
+  {
+    id: 3,
+    image:
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1600&q=80",
+    tag: "Laminated Woodgrain Finishes",
+    title: "Golden Oak Textured French Windows",
+    series: "Golden Oak Laminated Profiles (Hot Melt PUR Technology)",
+    specs: "Natural European Oak Grain • 100% Termite & Moisture Proof • Zero Repainting",
+    location: "Textured Interior Living Space",
+    badge: "Realistic Woodgrain",
+  },
+  {
+    id: 4,
+    image:
+      "https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?auto=format&fit=crop&w=1600&q=80",
+    tag: "High-Rise Wind Resilience",
+    title: "High-Load Sliding Balcony System",
+    series: "2.5 Track Sliding Series with Integrated Insect Net (NEP-1016 & NEP-1018)",
+    specs: "In-House Galvanized Steel Core • Engineered for High Wind Load Performance",
+    location: "Coastal & High-Rise Fenestration",
+    badge: "Tropical Grade (Class S)",
+  },
+  {
+    id: 5,
+    image:
+      "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=80",
+    tag: "Acoustic Insulation Design",
+    title: "Acoustic Casement Windows with T-Mullion",
+    series: "60 Casement Double Open with Fixed Window (NEP-1004 & NEP-1006)",
+    specs: "Multi-Chamber Noise Dampening Geometry • 100% Lead-Free Non-Toxic Formulation",
+    location: "Acoustic Urban Living Space",
+    badge: "Noise Reduction",
+  },
+  {
+    id: 6,
+    image:
+      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80",
+    tag: "Precision Extrusion Standards",
+    title: "European Extrusion Tooling & Quality Assurance",
+    series: "Manufactured with Automated Gravimetric Dosing Systems",
+    specs: "Rigorous Weld Strength, Heat Reversion, and Falling-Weight Impact Testing",
+    location: "Precision Manufacturing Standards",
+    badge: "Class A Extrusion",
+  },
+];
 
 export default function ImageSlideshow() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const slides = [
-    {
-      id: 1,
-      image:
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80",
-      tag: "3 Track Multi-Panel System",
-      title: "Grand Panoramic Sliding Doors",
-      series: "Nissi 3T Frame (NEP-1019) with Big Sash (NEP-1011)",
-      specs: "112mm Heavy-Duty Frame • Silent Tandem Rollers • Thermal Insulated Glass",
-      location: "Luxury Waterfront Residence, Chennai",
-      badge: "66% Clear Opening Span",
-    },
-    {
-      id: 2,
-      image:
-        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80",
-      tag: "Architectural Color Profiles",
-      title: "Anthracite Grey Modern Casement Facade",
-      series: "60 Casement Series with European Grey Foil",
-      specs: "Class A 2.3mm Wall Thickness • Multi-Point Security Locks • EPDM Gaskets",
-      location: "Contemporary Villa, Coimbatore",
-      badge: "20-Year Foil Warranty",
-    },
-    {
-      id: 3,
-      image:
-        "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1600&q=80",
-      tag: "Laminated Woodgrain Finishes",
-      title: "Golden Oak Textured French Windows",
-      series: "Golden Oak Laminated Profiles (Hot Melt PUR Technology)",
-      specs: "Natural European Oak Texture • 100% Termite & Moisture Immune • Zero Maintenance",
-      location: "Executive Bungalow, Bengaluru",
-      badge: "Realistic Wood Finish",
-    },
-    {
-      id: 4,
-      image:
-        "https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?auto=format&fit=crop&w=1600&q=80",
-      tag: "High-Rise Wind Load Ready",
-      title: "Cyclone-Resistant High-Rise Balcony Sliders",
-      series: "2.5 Track Sliding Series with Integrated Mosquito Net (NEP-1016 & NEP-1018)",
-      specs: "In-House Galvanized Steel Core • Tested >2,500 Pa Gale Wind Pressure",
-      location: "Sea-Facing Penthouse, Chennai",
-      badge: "Tropical Grade (Class S)",
-    },
-    {
-      id: 5,
-      image:
-        "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=80",
-      tag: "Acoustic Proofing & Quiet Living",
-      title: "Soundproof Casement Windows with T-Mullion",
-      series: "60 Casement Double Open with Fixed Window (NEP-1004 & NEP-1006)",
-      specs: "Dampens External Traffic Noise up to 40dB • 100% Lead-Free Non-Toxic Formulation",
-      location: "Urban Residence, Madurai",
-      badge: "Up to 40dB Reduction",
-    },
-    {
-      id: 6,
-      image:
-        "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80",
-      tag: "State-of-the-Art Manufacturing",
-      title: "Avadi Mega Extrusion Plant & Testing Lab",
-      series: "4 Floors • 20,000 Sq.Ft • 6 European Extrusion Lines",
-      specs: "Automated Gravimetric Dosing • 2 PUR Color Laminators • 8,000 Sq.Ft Steel Plant",
-      location: "Avadi Industrial Zone, Chennai - 600 056",
-      badge: "6 Automated Extruders",
-    },
-  ];
+  const nextSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % SLIDES.length);
+  }, []);
 
-  // Auto-play slideshow timer
+  const prevSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+  }, []);
+
+  // Auto-play timer with pause on hover
   useEffect(() => {
-    if (!isPlaying) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    if (!isPlaying || isHovered) return;
+    const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
-  }, [isPlaying, slides.length]);
+  }, [isPlaying, isHovered, nextSlide]);
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % slides.length);
+  // Keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") {
+      prevSlide();
+    } else if (e.key === "ArrowRight") {
+      nextSlide();
+    } else if (e.key === " ") {
+      e.preventDefault();
+      setIsPlaying((prev) => !prev);
+    }
   };
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
-  };
-
-  const current = slides[currentIndex];
+  const current = SLIDES[currentIndex];
 
   return (
-    <section className="py-20 lg:py-24 bg-slate-950 text-white relative overflow-hidden border-y border-slate-900">
+    <section
+      className="py-20 lg:py-24 bg-slate-950 text-white relative overflow-hidden border-y border-slate-900 focus:outline-none"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      aria-roledescription="carousel"
+      aria-label="Nissi Architectural Showcase Slideshow"
+    >
       {/* Background ambient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-orange-600/10 rounded-full blur-[140px] pointer-events-none" />
 
@@ -116,7 +145,7 @@ export default function ImageSlideshow() {
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-xs font-bold uppercase tracking-widest text-orange-400 mb-3">
               <Sparkles className="w-3.5 h-3.5 text-orange-400" />
-              <span>Architectural Showcase & Real Installations</span>
+              <span>Architectural Showcase & Applications</span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
               Nissi in Action:{" "}
@@ -125,7 +154,7 @@ export default function ImageSlideshow() {
               </span>
             </h2>
             <p className="mt-3 text-sm sm:text-base text-slate-400 max-w-2xl">
-              Discover how architects, builders, and fabricators across India elevate residential and commercial projects with Nissi Elite Plast profiles.
+              Explore architectural possibilities with Nissi Elite Plast profile systems across contemporary homes, high-rises, and commercial spaces.
             </p>
           </div>
 
@@ -134,7 +163,7 @@ export default function ImageSlideshow() {
             <button
               onClick={() => setIsPlaying(!isPlaying)}
               className="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-orange-500 text-slate-300 hover:text-white transition-colors"
-              title={isPlaying ? "Pause Slideshow" : "Resume Slideshow"}
+              title={isPlaying ? "Pause Slideshow (Space)" : "Resume Slideshow (Space)"}
               aria-label={isPlaying ? "Pause Slideshow" : "Resume Slideshow"}
             >
               {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -143,19 +172,19 @@ export default function ImageSlideshow() {
             <button
               onClick={prevSlide}
               className="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-orange-500 text-slate-300 hover:text-white transition-colors"
-              aria-label="Previous slide"
+              aria-label="Previous slide (Left arrow)"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
 
             <div className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-mono font-bold text-orange-400">
-              0{currentIndex + 1} / 0{slides.length}
+              0{currentIndex + 1} / 0{SLIDES.length}
             </div>
 
             <button
               onClick={nextSlide}
               className="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-orange-500 text-slate-300 hover:text-white transition-colors"
-              aria-label="Next slide"
+              aria-label="Next slide (Right arrow)"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -164,18 +193,20 @@ export default function ImageSlideshow() {
 
         {/* Main Slideshow Stage */}
         <div className="relative rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900 group">
-          {/* Main Slide Image */}
+          {/* Main Slide Image using Next/Image */}
           <div className="relative h-[420px] sm:h-[540px] lg:h-[620px] w-full overflow-hidden">
-            <img
+            <Image
               src={current.image}
               alt={current.title}
-              key={current.id}
-              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 animate-in fade-in zoom-in-95 duration-500"
+              fill
+              priority={currentIndex === 0}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
 
             {/* Gradient Overlays for contrast and typography */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-slate-950/20" />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-slate-950/20 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-transparent pointer-events-none" />
           </div>
 
           {/* Top Left Floating Tag */}
@@ -228,14 +259,11 @@ export default function ImageSlideshow() {
           </div>
 
           {/* Autoplay progress bar */}
-          {isPlaying && (
-            <div className="absolute bottom-0 inset-x-0 h-1 bg-slate-800">
+          {isPlaying && !isHovered && (
+            <div className="absolute bottom-0 inset-x-0 h-1 bg-slate-800 pointer-events-none">
               <div
                 key={currentIndex}
                 className="h-full bg-gradient-to-r from-orange-500 to-amber-400 w-full animate-[progress_5s_linear]"
-                style={{
-                  animation: "progress 5s linear infinite",
-                }}
               />
             </div>
           )}
@@ -243,33 +271,34 @@ export default function ImageSlideshow() {
 
         {/* Thumbnail Selector Strip */}
         <div className="mt-6 grid grid-cols-3 sm:grid-cols-6 gap-3">
-          {slides.map((s, idx) => {
+          {SLIDES.map((s, idx) => {
             const isActive = currentIndex === idx;
             return (
               <button
                 key={s.id}
-                onClick={() => {
-                  setCurrentIndex(idx);
-                }}
+                onClick={() => setCurrentIndex(idx)}
                 className={`relative rounded-xl overflow-hidden h-20 sm:h-24 border-2 transition-all text-left group ${
                   isActive
                     ? "border-orange-500 ring-2 ring-orange-500/30 scale-[1.03]"
                     : "border-slate-800 hover:border-slate-600 opacity-60 hover:opacity-100"
                 }`}
+                aria-label={`View slide ${idx + 1}: ${s.title}`}
               >
-                <img
+                <Image
                   src={s.image}
                   alt={s.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  fill
+                  sizes="150px"
+                  className="object-cover group-hover:scale-110 transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-slate-950/40 group-hover:bg-slate-950/10 transition-colors" />
-                <div className="absolute bottom-1.5 left-2 right-2">
+                <div className="absolute inset-0 bg-slate-950/40 group-hover:bg-slate-950/10 transition-colors pointer-events-none" />
+                <div className="absolute bottom-1.5 left-2 right-2 pointer-events-none">
                   <div className="text-[10px] font-bold text-white truncate drop-shadow">
                     {s.title}
                   </div>
                 </div>
                 {isActive && (
-                  <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-orange-400 shadow" />
+                  <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-orange-400 shadow pointer-events-none" />
                 )}
               </button>
             );

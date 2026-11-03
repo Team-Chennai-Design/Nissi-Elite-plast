@@ -14,7 +14,6 @@ async function generateManualPdf() {
 
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const fontOblique = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
   // ---------------- Page 1: Cover Page ----------------
   const page1 = pdfDoc.addPage([595.28, 841.89]); // A4

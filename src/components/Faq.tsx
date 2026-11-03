@@ -1,31 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, HelpCircle } from "lucide-react";
 
 export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
     {
-      q: "What types of companies and projects does Nissi support?",
-      a: "We collaborate with seed-stage startups, high-growth scale-ups, and established enterprises across SaaS, FinTech, Healthcare, E-Commerce, and Logistics. We handle everything from greenfield full-stack development to legacy modernization and cloud infrastructure optimization.",
+      q: "What makes NISSI Elite Plast uPVC profiles 100% lead-free and eco-friendly?",
+      a: "Our uPVC profiles are formulated exclusively with non-toxic calcium-zinc (Ca-Zn) organic stabilizers instead of conventional heavy-metal lead. This complies with European RoHS standards, guarantees safe indoor air quality for homes and schools, and ensures the profiles are 100% recyclable.",
     },
     {
-      q: "What engagement models do you offer?",
-      a: "We offer flexible structures based on your roadmap: Dedicated Engineering Squads (for ongoing feature development and scaling), Milestone-Based Project Delivery (for clearly scoped projects with defined deliverables), and Strategic Technical Advisory (for fractional CTO/architectural oversight).",
+      q: "What is the difference between the 15-Year and 20-Year warranties?",
+      a: "We offer a 15-Year structural warranty on our virgin white base uPVC extrusion profiles against yellowing, brittleness, and warping in Indian tropical climates. For our colour profiles (Golden Oak, Dark Oak, Anthracite Grey, Walnut), we use European-grade laminated foils with hot-melt PUR technology backed by a 20-Year warranty against peeling, bubbling, and UV fading.",
     },
     {
-      q: "How quickly can Nissi commence a project?",
-      a: "Following an initial discovery session and mutual alignment, our team typically initiates the kickoff and architecture phase within 5 to 7 business days.",
+      q: "Why is in-house steel reinforcement critical for high-rise buildings?",
+      a: "Many suppliers use uncertified, thin third-party steel that rusts inside profile chambers. At Nissi, our dedicated 8,000 sq.ft facility produces heavy-gauge galvanized steel reinforcement coils (C-channels, U-channels, and box sections) in-house. This gives windows and doors the structural moment of inertia needed to withstand intense cyclone winds and high wind loads in coastal and high-rise apartments.",
     },
     {
-      q: "How do you handle source code ownership and security?",
-      a: "You retain 100% of all intellectual property, source code, design assets, and credentials upon delivery. We sign non-disclosure agreements (NDAs) upfront and enforce strict Zero-Trust security across our development pipelines.",
+      q: "How does the 2.5 Track Sliding Series with integrated mesh work?",
+      a: "The 2.5 Track system (NEP-1016) features an integrated third track specifically engineered for stainless steel or fiberglass insect/mosquito mesh sashes. This allows full ventilation and natural airflow while maintaining a complete insect barrier, making it the ideal choice for residential bedrooms and living rooms.",
     },
     {
-      q: "What does post-launch maintenance look like?",
-      a: "We offer dedicated Service Level Agreements (SLAs) that include 24/7 uptime monitoring, security patching, dependency upgrades, performance tuning, and on-demand feature iterations.",
+      q: "How can window and door fabricators partner with Nissi Extrusion?",
+      a: "We supply profile bundles, steel reinforcement sections, and hardware directly from our 20,000 sq.ft mega extrusion plant in Avadi, Chennai. Registered fabricators receive technical CAD drawings, cutting charts, fabrication training, and priority logistics dispatch across South India and nationwide.",
+    },
+    {
+      q: "What wall thickness and standards do Nissi profiles adhere to?",
+      a: "All main load-bearing profiles (frames and sashes) are manufactured to Class A standards with wall thicknesses between 2.2mm and 2.3mm. They are formulated with high rutile titanium dioxide (TiO2) content for Class S severe tropical climate resistance.",
     },
   ];
 
@@ -34,17 +38,19 @@ export default function Faq() {
   };
 
   return (
-    <section id="faqs" className="py-24 bg-slate-900/30 relative border-t border-slate-900">
+    <section id="faqs" className="py-20 lg:py-28 bg-slate-50 relative border-t border-slate-200">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <div className="inline-block px-3.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-400 uppercase tracking-widest mb-3">
-            Common Inquiries
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-orange-100 border border-orange-200 text-xs font-bold uppercase tracking-widest text-orange-700 mb-3">
+            <HelpCircle className="w-3.5 h-3.5" />
+            <span>Frequently Asked Questions</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-            Frequently Asked Questions
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+            Everything You Need to Know About{" "}
+            <span className="text-orange-600">Nissi uPVC</span>
           </h2>
-          <p className="mt-3 text-base text-slate-300">
-            Everything you need to know about partnering with Nissi.
+          <p className="mt-3 text-sm sm:text-base text-slate-600">
+            Technical clarity for architects, fabricators, builders, and homeowners.
           </p>
         </div>
 
@@ -54,23 +60,24 @@ export default function Faq() {
             return (
               <div
                 key={i}
-                className="rounded-2xl bg-slate-900/60 border border-slate-800/80 overflow-hidden transition-all duration-200"
+                className="rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
               >
                 <button
                   onClick={() => toggle(i)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-800/30 transition-colors"
+                  className="w-full flex items-center justify-between p-5 sm:p-6 text-left hover:bg-slate-50 transition-colors"
+                  aria-expanded={isOpen}
                 >
-                  <span className="text-base sm:text-lg font-semibold text-white pr-4">
+                  <span className="text-base sm:text-lg font-bold text-slate-900 pr-4">
                     {faq.q}
                   </span>
                   <ChevronDown
-                    className={`w-5 h-5 text-blue-400 shrink-0 transition-transform duration-300 ${
+                    className={`w-5 h-5 text-orange-600 shrink-0 transition-transform duration-300 ${
                       isOpen ? "rotate-180" : ""
                     }`}
                   />
                 </button>
                 {isOpen && (
-                  <div className="px-6 pb-6 pt-1 text-sm sm:text-base text-slate-300 leading-relaxed border-t border-slate-800/40">
+                  <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100">
                     {faq.a}
                   </div>
                 )}

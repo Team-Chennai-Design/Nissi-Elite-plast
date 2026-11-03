@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Logo({
   variant = "default",
   size = "default",
@@ -20,17 +22,23 @@ export default function Logo({
     <div className={`flex items-center select-none ${className}`}>
       {isLight ? (
         <div className="bg-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl shadow-xl border border-slate-200/60 inline-flex items-center hover:scale-105 transition-transform duration-300">
-          <img
+          <Image
             src="/logo.svg"
             alt="NISSI Elite Plast UPVC Profiles"
+            width={280}
+            height={78}
+            priority
             className={`${sizeClasses} w-auto object-contain drop-shadow-sm`}
           />
         </div>
       ) : (
         <div className="inline-flex items-center hover:opacity-95 transition-opacity">
-          <img
+          <Image
             src="/logo.svg"
             alt="NISSI Elite Plast UPVC Profiles"
+            width={280}
+            height={78}
+            priority
             className={`${sizeClasses} w-auto object-contain drop-shadow-sm`}
           />
         </div>

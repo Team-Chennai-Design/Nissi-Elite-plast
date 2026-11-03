@@ -1,11 +1,4 @@
-import {
-  Wrench,
-  Layers,
-  ShieldCheck,
-  CheckCircle,
-  Zap,
-  ArrowRight,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function HardwareSection() {
   const hardwareItems = [

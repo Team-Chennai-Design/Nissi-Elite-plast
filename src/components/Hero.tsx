@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Logo from "./Logo";
 import {
   ArrowRight,
@@ -5,7 +6,6 @@ import {
   Award,
   Sparkles,
   Download,
-  CheckCircle2,
   PhoneCall,
 } from "lucide-react";
 
@@ -125,12 +125,15 @@ export default function Hero() {
             <div className="relative rounded-3xl overflow-hidden border-2 border-slate-700/80 shadow-2xl bg-slate-900 group">
               {/* Architecture Image */}
               <div className="relative h-[380px] sm:h-[460px] w-full overflow-hidden">
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
-                  alt="Modern Luxury Villa with Nissi uPVC sliding and casement windows"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  alt="Modern Luxury Villa Architectural Fenestration Concept"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 500px"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent pointer-events-none" />
               </div>
 
               {/* Floating Profile Badge */}
@@ -158,9 +161,11 @@ export default function Hero() {
                     </p>
                   </div>
                   <div className="bg-white px-3.5 py-1.5 rounded-xl shadow-lg border border-slate-200/50 shrink-0 flex items-center">
-                    <img
+                    <Image
                       src="/logo.svg"
                       alt="NISSI Elite Plast UPVC Profiles"
+                      width={140}
+                      height={39}
                       className="h-8 sm:h-9 w-auto object-contain"
                     />
                   </div>

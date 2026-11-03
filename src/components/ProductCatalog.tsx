@@ -2,14 +2,8 @@
 
 import { useState } from "react";
 import {
-  Layers,
-  Sliders,
   CheckCircle,
   FileSpreadsheet,
-  Download,
-  Info,
-  Maximize2,
-  Shield,
   ArrowRight,
 } from "lucide-react";
 
