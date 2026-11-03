@@ -183,7 +183,7 @@ export default function Hero() {
                   Avadi Mega Facility
                 </div>
                 <div className="text-[11px] text-slate-600">
-                  4 Floors • 6 Extruders • 2 PUR Laminators
+                  4 Floors • 6 Extruders • 300-500 Tons/month
                 </div>
               </div>
             </div>

@@ -7,6 +7,8 @@ import ProductCatalog from "@/components/ProductCatalog";
 import ImageSlideshow from "@/components/ImageSlideshow";
 import ColorFinishes from "@/components/ColorFinishes";
 import Manufacturing from "@/components/Manufacturing";
+import SupplyReach from "@/components/SupplyReach";
+import CipetTested from "@/components/CipetTested";
 import HardwareSection from "@/components/HardwareSection";
 import BrochureModal from "@/components/BrochureModal";
 import Faq from "@/components/Faq";
@@ -26,6 +28,8 @@ export default function Home() {
         <ImageSlideshow />
         <ColorFinishes />
         <Manufacturing />
+        <CipetTested />
+        <SupplyReach />
         <HardwareSection />
         <BrochureModal />
         <Faq />

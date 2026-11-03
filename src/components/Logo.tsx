@@ -13,7 +13,7 @@ export default function Logo({
 
   const sizeClasses = {
     sm: "h-9 sm:h-10",
-    default: "h-14 sm:h-16 md:h-18 lg:h-20",
+    default: "h-12 sm:h-14 md:h-15 lg:h-16 xl:h-18 2xl:h-20",
     lg: "h-16 sm:h-20 md:h-24",
     xl: "h-20 sm:h-24 md:h-28",
   }[size];
