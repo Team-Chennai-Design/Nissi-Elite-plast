@@ -81,17 +81,17 @@ export default function About() {
               without yellowing, cracking, or losing tensile strength.
             </p>
 
-            {/* McCoy Mart Partnership Banner */}
+            {/* Pan-India Network Banner */}
             <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-orange-600 flex items-center justify-center shrink-0 text-white font-bold">
                 <HeartHandshake className="w-6 h-6" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-slate-900">
-                  Strategic Partnership with McCoy Mart
+                  Pan-India Fabricator & Dealer Network
                 </h3>
                 <p className="text-xs text-slate-600 mt-1">
-                  We are proud to collaborate with McCoy Mart, India&apos;s premier digital marketplace for construction materials, empowering architects, developers, fabricators, and homeowners nationwide with verified access to Nissi Elite Plast profiles.
+                  Empowering architects, developers, fabricators, and homeowners nationwide with verified, direct factory access to Nissi Elite Plast profiles, prompt dispatch, and dedicated technical support.
                 </p>
               </div>
             </div>

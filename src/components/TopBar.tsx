@@ -26,14 +26,13 @@ export default function TopBar() {
           </div>
         </div>
 
-        {/* Right: Partner & Highlights */}
+        {/* Right: Manufacturer Highlights */}
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5 text-[11px] text-slate-300">
+          <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-slate-300">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-slate-400">Partnered with</span>
-            <strong className="text-white">McCoy Mart</strong>
+            <span className="text-slate-400">Direct From Manufacturer</span>
           </div>
-          <span className="text-slate-700">|</span>
+          <span className="hidden sm:inline text-slate-700">|</span>
           <a
             href="#brochure"
             className="flex items-center gap-1 text-[11px] font-semibold text-orange-400 hover:text-orange-300 transition-colors"

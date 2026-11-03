@@ -35,7 +35,7 @@ export default function Footer() {
               in-house galvanized steel reinforcement coils, and complete hardware systems.
             </p>
             <div className="pt-2 text-xs text-slate-500">
-              Official Construction Partner: <strong className="text-slate-300">McCoy Mart</strong>
+              ISO Certified Manufacturing Facility • 100% Lead-Free uPVC
             </div>
           </div>
 

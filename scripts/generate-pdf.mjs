@@ -152,7 +152,7 @@ async function generateManualPdf() {
     color: orange,
   });
 
-  page1.drawText("Web: www.nissiupvcgroups.com  •  Strategic Construction Partner with McCoy Mart", {
+  page1.drawText("Web: www.nissiupvcgroups.com  •  European Extrusion Technology • Avadi, Chennai", {
     x: 50,
     y: 30,
     size: 9.5,
